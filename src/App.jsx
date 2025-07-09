@@ -1,47 +1,39 @@
-import React,{useState} from "react";
-import "./style.css";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const App = () => {
+  const [data, setdata] = useState([]);
 
-  ////////////////////////////////////////////
-  
-  const [username, setusername] = useState('')
-
-  ///////////////////////////////////////////
-  
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const getData = async () => {
+    const response = await axios.get('https://picsum.photos/v2/list');
+    console.log(response.data);
+    setdata(response.data);
   };
+  useEffect(() => {
+    getData()
 
-  ///////////////////////////////////////////
+  }, [])
   
   return (
-    <div>
-      <form
-        className="flex flex-col items-center"
-        onSubmit={(e) => {
-          submitHandler(e);
-          console.log(username);
-          setusername('')
-        }}
-      >
-        <input
-          value={username}
-          type="text"
-          onChange={(e)=>{
-            setusername(e.target.value)
-          }}
-          className="border-rose-500 w-64 border-8 my-10 px-3 py-3 rounded-lg	"
-          placeholder="Enteryour name"
-        />
+    <>
+      <div className="text-2xl font-bold text-center my-4">Picsum Gallery</div>
+      <div className="flex justify-center mb-4">
         <button
-          className="bg-white border-4 my-10 w-24
- border-red-500 px-4 py-1 rounded"
+          onClick={getData}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
         >
-          Submit
+          Get Data
         </button>
-      </form>
-    </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-4">
+        {data.map((e, idx) => (
+          <div key={idx} className="bg-gray-100 p-4 rounded shadow">
+            <h2 className="text-lg font-semibold mb-2">{e.author}</h2>
+            <img className="h-40 w-full object-cover rounded" src={e.download_url} alt={e.author} />
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
